@@ -1,0 +1,23 @@
+{
+  "name": "fixvhdwr",
+  "version": "0.0.1",
+  "description": "FixVhdWr tool for cross-platform",
+  "author": "Champkeh <champion.ge@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "VirtualBox",
+    "FixVhdWr",
+    "vhd",
+    "cross platform"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^7.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.15.0"
+  }
+}
