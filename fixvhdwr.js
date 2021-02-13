@@ -1,26 +1,32 @@
 #!/usr/bin/env node
 
-const { program } = require('commander');
-program.version(require('./package.json').version);
+const { Command } = require('commander')
+const program = new Command()
+const { write } = require('./commands/write')
 
 program
-    .requiredOption('-v, --vhd <vdh file>', '.vhd file to modify')
-    .option('-b, --boot <bin file>', '.bin file to write')
-    .option('-a, --asm <asm file>', 'asm file')
+    .version(require('./package.json').version)
 
+
+// subcommand: write <vhd> <bin>
+program
+    .command('write <vhd> <bin>')
+    .description('write special binary file to virtual hard disk(vhd)', {
+        vhd: 'virtual hard disk (.vhd format only)',
+        bin: 'binary file'
+    })
+    .option('-s, --sector <sector>', 'sector number to write begin', 0)
+    .option('-f, --force', 'force write', false)
+    .action((vhd, bin, options, command) => {
+        const sector = Number(options.sector)
+        const force = options.force
+        if (isNaN(sector)) {
+            throw new Error('-s参数必须为整数')
+        }
+        console.log('写入模式:')
+        console.log(`  扇区: ${sector}`)
+        console.log(`  强制写入: ${force}`)
+        write(vhd, bin, options.sector)
+    })
 
 program.parse(process.argv)
-
-
-const options = program.opts()
-if (!options.boot && !options.asm) {
-    console.warn('-b 和 -a 参数不能同时为空')
-    process.exit(1)
-}
-
-const targetFile = options.vhd
-const dataFile = options.boot
-
-
-const { writeBinDataToVhdFile } = require('./utils')
-writeBinDataToVhdFile(targetFile, dataFile)

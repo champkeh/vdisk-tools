@@ -1,6 +1,6 @@
 {
   "name": "fixvhdwr",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "FixVhdWr tool for cross-platform",
   "author": "Champkeh <champion.ge@gmail.com>",
   "main": "index.js",
