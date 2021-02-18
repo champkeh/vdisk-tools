@@ -12,7 +12,7 @@
 
 ## Install
 ```shell
-npm install -g vdisk-tools
+npm install -g vdisk
 ```
 
 ## Example
