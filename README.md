@@ -29,6 +29,11 @@ vdisk write disk.vhd boot.bin
 vdisk write disk.vhd data.bin -s 100
 ```
 
+### 查看虚拟磁盘文件的header/footer结构
+```shell
+vdisk info disk.vhd
+```
+
 ### 查看帮助
 ```shell
 vdisk write -h
