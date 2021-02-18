@@ -3,6 +3,7 @@
 const { Command } = require('commander')
 const program = new Command()
 const { write } = require('./commands/write')
+const { info } = require('./commands/info')
 
 program
     .version(require('./package.json').version)
@@ -17,7 +18,7 @@ program
     })
     .option('-s, --sector <sector>', 'sector number to write begin', 0)
     .option('-f, --force', 'force write', false)
-    .action((vhd, bin, options, command) => {
+    .action((vhd, bin, options) => {
         const sector = Number(options.sector)
         const force = options.force
         if (isNaN(sector)) {
@@ -27,6 +28,14 @@ program
         console.log(`  扇区: ${sector}`)
         console.log(`  强制写入: ${force}`)
         write(vhd, bin, options.sector)
+    })
+
+// subcommand: info <vhd>
+program
+    .command('info <vhd>')
+    .description('inspect virtual disk file structure')
+    .action((vhd, options) => {
+        info(vhd)
     })
 
 program.parse(process.argv)

@@ -51,6 +51,100 @@ function checkVhdValid(footer) {
     return true
 }
 
+/**
+ * 读取虚拟磁盘文件的Footer结构(最后512字节)
+ * @param vhdFile
+ */
+function readFooterFromVDisk(vhdFile) {
+    const vhdFileContent = fs.readFileSync(vhdFile)
+    if (vhdFileContent.length < 512) {
+        throw new Error('vdisk file not valid')
+    }
+    return vhdFileContent.slice(-512)
+}
+
+/**
+ * 读取虚拟磁盘文件的Header结构(1024字节)
+ * @param vhdFile
+ */
+function readHeaderFromVDisk(vhdFile) {
+    const vhdFileContent = fs.readFileSync(vhdFile)
+    if (vhdFileContent.length < 512+1024) {
+        throw new Error('vdisk file not valid')
+    }
+    return vhdFileContent.slice(512, 1536)
+}
+
+/**
+ * 16进制的buffer转为10进制的数字
+ * @param buffer
+ * @return {number}
+ */
+function hexBufferToNumber(buffer) {
+    return parseInt(buffer.toString('hex'), 16)
+}
+
+/**
+ * 根据4字节的buffer计算版本号
+ * @param buf4
+ * @return {string}
+ */
+function calcVersionFromBuffer4(buf4) {
+    const major = hexBufferToNumber(buf4.slice(0, 2))
+    const minor = hexBufferToNumber(buf4.slice(2, 4))
+    return `${major}.${minor}`
+}
+
+/**
+ * CHS Calculation
+ * @param totalSectors
+ */
+function chsCalc(totalSectors) {
+    if (totalSectors > 65535 * 16 * 255) {
+        totalSectors = 65535 * 16 * 255
+    }
+
+    let sectorsPerTrack = 0, heads = 0, cylinderTimesHeads = 0, cylinders = 0
+    if (totalSectors >= 65535 * 16 * 63) {
+        sectorsPerTrack = 255
+        heads = 16
+        cylinderTimesHeads = totalSectors / sectorsPerTrack
+    } else {
+        sectorsPerTrack = 17
+        cylinderTimesHeads = totalSectors / sectorsPerTrack
+
+        heads = (cylinderTimesHeads + 1023) / 1024
+
+        if (heads < 4) {
+            heads = 4
+        }
+        if (cylinderTimesHeads >= (heads * 1024) || heads > 16) {
+            sectorsPerTrack = 31
+            heads = 16
+            cylinderTimesHeads = totalSectors / sectorsPerTrack
+        }
+        if (cylinderTimesHeads >= (heads * 1024)) {
+            sectorsPerTrack = 63
+            heads = 16
+            cylinderTimesHeads = totalSectors / sectorsPerTrack
+        }
+    }
+    cylinders = cylinderTimesHeads / heads
+
+    // round down
+    cylinders = Math.floor(cylinders)
+    heads = Math.floor(heads)
+    sectorsPerTrack = Math.floor(sectorsPerTrack)
+
+    return [cylinders, heads, sectorsPerTrack]
+}
+
+
 module.exports = {
-    writeBinDataToVhdFile
+    writeBinDataToVhdFile,
+    readFooterFromVDisk,
+    readHeaderFromVDisk,
+    hexBufferToNumber,
+    calcVersionFromBuffer4,
+    chsCalc,
 }

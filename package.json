@@ -17,7 +17,7 @@
     "yarn.lock"
   ],
   "scripts": {
-    "start": "node cli.js"
+    "start": "node bin/vdisk.js"
   },
   "keywords": [
     "virtual box",
@@ -28,7 +28,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "commander": "^7.0.0"
+    "commander": "^7.0.0",
+    "sn-js-utils": "^0.1.7"
   },
   "devDependencies": {
     "eslint": "^7.15.0"
