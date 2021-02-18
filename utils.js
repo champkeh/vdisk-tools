@@ -24,7 +24,7 @@ function writeBinDataToVhdFile(vhdFile, binDataFile, sector = 0, force = false) 
             throw new Error(`写入引导扇区(MBR)的内容校验未通过`)
         }
         if (binDataLength > 466) {
-            console.warn('写入引导扇区的内容超过已超过466字节，有可能会导致分区表破坏')
+            console.warn('写入引导扇区的内容已超过466字节，有可能会导致分区表破坏')
         }
         // 写入校验位
         vhdFileContent[510] = 0x55

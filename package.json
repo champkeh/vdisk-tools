@@ -1,17 +1,30 @@
 {
-  "name": "fixvhdwr",
+  "name": "vdisk-tools",
   "version": "0.0.3",
-  "description": "FixVhdWr tool for cross-platform",
+  "description": "virtual disk toolset for virtual machine",
   "author": "Champkeh <champion.ge@gmail.com>",
   "main": "index.js",
+  "bin": {
+    "vdisk": "bin/vdisk.js"
+  },
+  "files": [
+    "bin",
+    "commands",
+    "cli.js",
+    "package.json",
+    "README.md",
+    "utils.js",
+    "yarn.lock"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node cli.js"
   },
   "keywords": [
-    "VirtualBox",
-    "FixVhdWr",
+    "virtual box",
+    "virtual machine",
+    "virtual hard disk",
     "vhd",
-    "cross platform"
+    "FixVhdWr"
   ],
   "license": "MIT",
   "dependencies": {

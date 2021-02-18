@@ -1,40 +1,40 @@
-# FixVhdWr
+# vdisk-tools
 
-> 跨平台的 FixVhdWr 工具
+> 操作虚拟磁盘文件(virtual disk)的工具。
+> 目前支持的虚拟磁盘文件规范如下表:  
+>
+> 文件规范| 小类 | 支持情况
+> --- |   ---   |  ---
+> vhd | fixed   | 支持
+> vhd | dynamic | coming soon
+> vhd | difference | 暂不支持
 
-## 使用说明
 
-### 1. 下载
+## Install
 ```shell
-git clone git@github.com:champkeh/FixVhdWr.git
+npm install -g vdisk-tools
 ```
 
-### 2. 配置path
+## Example
 
-自行添加PATH变量包含该目录
+### 向虚拟磁盘的启动扇区(逻辑0扇区)写入程序
 ```shell
-export PATH=$PATH:/path/to/this/directory
+# 将 boot.bin 程序写入 disk.vhd 文件的启动扇区
+vdisk write disk.vhd boot.bin
 ```
-  
 
-### 3. 写入启动扇区(将`boot.bin`写入`x.vhd`文件的启动扇区)
+### 向虚拟磁盘的指定扇区处写入数据
 ```shell
-fixvhdwr.js write x.vhd boot.bin
+# 从虚拟磁盘 disk.vhd 的第100扇区(以0开头)开始，写入 data.bin 文件内容
+vdisk write disk.vhd data.bin -s 100
 ```
 
-### 4. 写入自定义扇区
+### 查看帮助
 ```shell
-# 从虚拟硬盘 x.vhd 的第100扇区(0开头)开始，写入 data.bin 文件内容
-fixvhdwr.js write x.vhd data.bin -s 100
-```
+vdisk write -h
 
-### 5. 查看帮助
-```shell
-fixvhdwr.js write -h
-```
-
-```
-Usage: fixvhdwr write [options] <vhd> <bin>
+# 输出
+Usage: vdisk write [options] <vhd> <bin>
 
 write special binary file to virtual hard disk(vhd)
 
@@ -47,6 +47,3 @@ Options:
   -f, --force            force write (default: false)
   -h, --help             display help for command
 ```
-
-## 说明
-目前，该工具还只能用于固定大小的vhd文件，后续可能会增加对动态vhd文件的支持
