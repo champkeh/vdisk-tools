@@ -1,41 +1,77 @@
 #!/usr/bin/env node
 
-const { Command } = require('commander')
+const { Command, InvalidOptionArgumentError } = require('commander')
 const program = new Command()
-const { write } = require('./commands/write')
-const { info } = require('./commands/info')
+const { inspectCommand } = require('./commands/inspect')
+const { readCommand } = require('./commands/read')
+const { writeCommand } = require('./commands/write')
+const { clearCommand } = require('./commands/clear')
 
 program
-    .version(require('./package.json').version)
+    .version('v'+require('./package.json').version, '-v, --version', 'output the current version')
 
+
+// subcommand: inspect <vhd>
+program
+    .command('inspect <vhd>')
+    .description('inspect virtual disk file structure', {
+        vhd: 'virtual hard disk file'
+    })
+    .action((vhd) => {
+        inspectCommand(vhd)
+    })
+
+// subcommand: read <vhd>
+program
+    .command('read <vhd>')
+    .description('read sector data from virtual disk file', {
+        vhd: 'virtual hard disk file'
+    })
+    .option('-s, --sector <sector>', 'sector number to read begin', optionParseInt, 0)
+    .option('-c, --count <count>', 'sector count to read', optionParseInt, 1)
+    .action((vhd, { sector, count }) => {
+        console.log(readCommand(vhd, sector, count))
+    })
 
 // subcommand: write <vhd> <bin>
 program
     .command('write <vhd> <bin>')
-    .description('write special binary file to virtual hard disk(vhd)', {
-        vhd: 'virtual hard disk (.vhd format only)',
+    .description('write special binary file to virtual disk file', {
+        vhd: 'virtual hard disk file',
         bin: 'binary file'
     })
-    .option('-s, --sector <sector>', 'sector number to write begin', 0)
+    .option('-s, --sector <sector>', 'sector number to write begin', optionParseInt, 0)
     .option('-f, --force', 'force write', false)
-    .action((vhd, bin, options) => {
-        const sector = Number(options.sector)
-        const force = options.force
-        if (isNaN(sector)) {
-            throw new Error('-s参数必须为整数')
-        }
+    .action((vhd, bin, { sector, force }) => {
         console.log('写入模式:')
         console.log(`  扇区: ${sector}`)
         console.log(`  强制写入: ${force}`)
-        write(vhd, bin, options.sector)
+        writeCommand(vhd, bin, sector, force)
     })
 
-// subcommand: info <vhd>
+// subcommand: clear <vhd>
 program
-    .command('info <vhd>')
-    .description('inspect virtual disk file structure')
-    .action((vhd, options) => {
-        info(vhd)
+    .command('clear <vhd>')
+    .description('clear virtual disk file content', {
+        vhd: 'virtual hard disk file'
     })
+    .action((vhd) => {
+        clearCommand(vhd)
+    })
+
+// subcommand: graph <vhd>
+// program
+//     .command('graph')
+//     .description('generate graph about vhd structure')
 
 program.parse(process.argv)
+
+
+// option parser
+function optionParseInt(value) {
+    const parsedValue = parseInt(value, 10)
+    if (isNaN(parsedValue)) {
+        throw new InvalidOptionArgumentError('Not a number.')
+    }
+    return parsedValue
+}

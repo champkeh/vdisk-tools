@@ -29,9 +29,25 @@ vdisk write disk.vhd boot.bin
 vdisk write disk.vhd data.bin -s 100
 ```
 
+### 按照LBA逻辑扇区号读取磁盘内容(coming soon)
+```shell
+# 从虚拟磁盘 disk.vhd 的第100扇区(以0开头)处开始，读取2个扇区的内容
+vdisk read disk.vhd -s 100 -c 2
+```
+
 ### 查看虚拟磁盘文件的header/footer结构
 ```shell
-vdisk info disk.vhd
+vdisk inspect disk.vhd
+```
+
+### 清空虚拟磁盘文件(coming soon)
+```shell
+vdisk clear disk.vhd
+```
+
+### 生成虚拟磁盘内容的结构图(coming soon)
+```shell
+vdisk graph disk.vhd
 ```
 
 ### 查看帮助

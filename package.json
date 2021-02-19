@@ -13,7 +13,7 @@
     "cli.js",
     "package.json",
     "README.md",
-    "utils.js",
+    "shared/utils.js",
     "yarn.lock"
   ],
   "scripts": {

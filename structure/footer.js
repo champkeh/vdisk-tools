@@ -1,5 +1,6 @@
-const { hexBufferToNumber, calcVersionFromBuffer4, chsCalc } = require('../utils')
+const { hexBufferToNumber, calcVersionFromBuffer4 } = require('../shared/utils')
 const SnJsUtils = require('sn-js-utils')
+
 
 const FeaturesMap = {
     2: 'None',

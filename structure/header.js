@@ -1,4 +1,4 @@
-const { hexBufferToNumber, calcVersionFromBuffer4, chsCalc } = require('../utils')
+const { hexBufferToNumber, calcVersionFromBuffer4 } = require('../shared/utils')
 
 class HardDiskHeader {
     constructor(header) {
