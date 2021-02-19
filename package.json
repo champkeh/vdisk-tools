@@ -1,6 +1,6 @@
 {
   "name": "vdisk",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "virtual disk toolset for virtual machine",
   "author": "Champkeh <champion.ge@gmail.com>",
   "main": "index.js",
@@ -10,10 +10,12 @@
   "files": [
     "bin",
     "commands",
+    "shared",
+    "structure",
     "cli.js",
+    "const.js",
     "package.json",
     "README.md",
-    "shared/utils.js",
     "yarn.lock"
   ],
   "scripts": {
