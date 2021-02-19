@@ -1,6 +1,5 @@
 const fs = require('fs')
 
-
 /**
  * 从文件中读取数据
  * @param file
@@ -22,7 +21,7 @@ function readBufferFromFile(file, offset, length) {
  * @param offset
  * @return {Buffer}
  */
-function readBufferToEnd(file, offset) {
+function readBufferFromFileToEnd(file, offset) {
     const fileContent = fs.readFileSync(file)
     if (fileContent.length < Math.abs(offset)) {
         throw new Error('read too many content from file that exceed content\'s size')
@@ -138,7 +137,7 @@ function chsCalc(totalSectors) {
 
 module.exports = {
     readBufferFromFile,
-    readBufferToEnd,
+    readBufferFromFileToEnd,
     writeBufferToFile,
     hexBufferToNumber,
     calcVersionFromBuffer4,

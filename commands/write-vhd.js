@@ -20,6 +20,7 @@ function writeFixed(vhdFile, data, sector, force) {
  * @param force
  */
 function writeDynamic(vhdFile, data, sector, force) {
+    // 找到动态磁盘文件的写入位置
     console.log('暂未实现')
 }
 

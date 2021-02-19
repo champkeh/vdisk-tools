@@ -1,11 +1,11 @@
 const { VDISK_TYPE } = require('../const')
 const { resolveVDiskType } = require('../shared/vdisk')
-const { readBufferToEnd } = require('../shared/utils')
+const { readBufferFromFileToEnd } = require('../shared/utils')
 const { writeVhdFixed, writeVhdDynamic, writeVhdDifferencing } = require('./write-vhd')
 
 function write(vhdFile, binFile, sector, force) {
     const vdiskType = resolveVDiskType(vhdFile)
-    const data = readBufferToEnd(binFile, 0)
+    const data = readBufferFromFileToEnd(binFile, 0)
 
     switch (vdiskType) {
         case VDISK_TYPE.VHD_FIXED:
