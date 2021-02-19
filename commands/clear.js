@@ -1,5 +1,26 @@
-function clear(vhdFilePath) {
-    console.log('[todo]: clear vhd file content')
+const { VDISK_TYPE } = require('../const')
+const { resolveVDiskType } = require('../shared/vdisk')
+const { clearVhdFixed, clearVhdDynamic, clearVhdDifferencing } = require('./clear-vhd')
+
+function clear(vhdFile) {
+    const vdiskType = resolveVDiskType(vhdFile)
+
+    switch (vdiskType) {
+        case VDISK_TYPE.VHD_FIXED:
+            clearVhdFixed(vhdFile)
+            break
+        case VDISK_TYPE.VHD_DYNAMIC:
+            clearVhdDynamic(vhdFile)
+            break
+        case VDISK_TYPE.VHD_DIFFERENCING:
+            clearVhdDifferencing(vhdFile)
+            break
+        case VDISK_TYPE.UNKNOWN:
+            throw new Error('unknown vdisk type')
+        default:
+            console.log('该类型还未实现')
+            break
+    }
 }
 
 module.exports = {

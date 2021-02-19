@@ -30,6 +30,7 @@ program
     .option('-s, --sector <sector>', 'sector number to read begin', optionParseInt, 0)
     .option('-c, --count <count>', 'sector count to read', optionParseInt, 1)
     .action((vhd, { sector, count }) => {
+        // todo: 这里可以添加格式化器
         console.log(readCommand(vhd, sector, count))
     })
 
@@ -41,12 +42,8 @@ program
         bin: 'binary file'
     })
     .option('-s, --sector <sector>', 'sector number to write begin', optionParseInt, 0)
-    .option('-f, --force', 'force write', false)
-    .action((vhd, bin, { sector, force }) => {
-        console.log('写入模式:')
-        console.log(`  扇区: ${sector}`)
-        console.log(`  强制写入: ${force}`)
-        writeCommand(vhd, bin, sector, force)
+    .action((vhd, bin, { sector }) => {
+        writeCommand(vhd, bin, sector)
     })
 
 // subcommand: clear <vhd>

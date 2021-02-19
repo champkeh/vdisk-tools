@@ -1,7 +1,7 @@
 SECTION BOOT ALIGN=16 VSTART=0x7c00
         jmp start
 
-message db 'hello, world!'
+message db 'hello, dynamic virtual hard disk file...'
 
 start:
         mov ax, cs

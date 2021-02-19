@@ -79,6 +79,33 @@ function hexBufferToNumber(buffer) {
     return parseInt(buffer.toString('hex'), 16)
 }
 
+function numberToHexBuffer(num, len) {
+    const hex = align(num.toString(16), 2*len)
+    const arr = []
+    for (let i = 0; i < hex.length; i+=2) {
+        arr.push(hex.slice(i, i+2))
+    }
+    return Buffer.from(arr)
+}
+
+/**
+ * 计算bitmap对应数位
+ * @param startSector 起始扇区号
+ * @param sectorCount 写了多少个扇区数据
+ */
+function calcBitmapNumber(startSector, sectorCount) {
+    // 0,1 => 10000000b => 0x80
+    // 2,2 => 00110000b => 0x30
+    // 10,5 => 00000000 00111110b => 0x00 0x63
+}
+
+function align(str, len) {
+    if (str.length < len) {
+        return '0'.repeat(len - str.length) + str
+    }
+    return str
+}
+
 /**
  * 根据4字节的buffer计算版本号
  * @param buf4
@@ -135,11 +162,24 @@ function chsCalc(totalSectors) {
 }
 
 
+const BlockBitmapSectorCount = 1
+
+/**
+ * 映射磁盘扇区(逻辑扇区)到Block内扇区
+ */
+function mappingDiskSectorToBlockSector(rawSectorNumber, sectorsPerBlock, bat) {
+    const blockNumber = Math.floor(rawSectorNumber / sectorsPerBlock)
+    const sectorInBlock = rawSectorNumber % sectorsPerBlock
+
+    const actualSectorLocation = bat[blockNumber] + (BlockBitmapSectorCount + sectorInBlock) * 512
+}
+
 module.exports = {
     readBufferFromFile,
     readBufferFromFileToEnd,
     writeBufferToFile,
     hexBufferToNumber,
+    numberToHexBuffer,
     calcVersionFromBuffer4,
     chsCalc,
 }
