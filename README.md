@@ -3,11 +3,11 @@
 > 操作虚拟磁盘文件(virtual disk)的工具。
 > 目前支持的虚拟磁盘文件规范如下表:  
 >
-> 文件规范| 小类 | 支持情况
+> 文件规范| 文件类型 | 支持情况
 > --- |   ---   |  ---
 > vhd | fixed   | 支持
 > vhd | dynamic | 支持
-> vhd | difference | 暂不支持
+> vhd | differencing | 暂不支持
 
 
 ## Install
@@ -52,19 +52,24 @@ vdisk graph disk.vhd
 
 ### 查看帮助
 ```shell
-vdisk write -h
+vdisk --help
 
 # 输出
-Usage: vdisk write [options] <vhd> <bin>
-
-write special binary file to virtual hard disk(vhd)
-
-Arguments:
-  vhd                    virtual hard disk (.vhd format only)
-  bin                    binary file
+Usage: vdisk [options] [command]
 
 Options:
-  -s, --sector <sector>  sector number to write begin (default: 0)
-  -f, --force            force write (default: false)
-  -h, --help             display help for command
+  -v, --version                output the current version
+  -h, --help                   display help for command
+
+Commands:
+  inspect <vhd>                inspect virtual disk file structure
+  read [options] <vhd>         read sector data from virtual disk file
+  write [options] <vhd> <bin>  write special binary file to virtual disk file
+  clear <vhd>                  clear virtual disk file content
+  help [command]               display help for command
 ```
+
+## 规范文档
+
+1. [Virtual Hard Disk Image Format Specification(2006)](specs/Virtual%20Hard%20Disk%20Format%20Spec_10_18_06.doc)
+2. [Virtual Hard Disk v2 (VHDX) File Format](specs/MS-VHDX.pdf)
