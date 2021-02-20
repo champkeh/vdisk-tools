@@ -3,11 +3,15 @@
 > 操作虚拟磁盘文件(virtual disk)的工具。
 > 目前支持的虚拟磁盘文件规范如下表:  
 >
-> 文件规范| 文件类型 | 支持情况
-> --- |   ---   |  ---
-> vhd | fixed   | 支持
-> vhd | dynamic | 支持
-> vhd | differencing | 暂不支持
+> spec    | type         | support
+> ---     | :---:        | :---:
+> vhd     | fixed        | yes
+> vhd     | dynamic      | yes
+> vhd     | differencing | no (coming soon)
+> vdi     | fixed        | no (coming soon)
+> vdi     | dynamic      | no
+> vmdk    | fixed        | no
+> vmdk    | dynamic      | no
 
 
 ## Install
@@ -73,6 +77,9 @@ Commands:
 
 1. [Virtual Hard Disk Image Format Specification(2006)](specs/Virtual%20Hard%20Disk%20Format%20Spec_10_18_06.doc)
 2. [Virtual Hard Disk v2 (VHDX) File Format](specs/MS-VHDX.pdf)
+3. [All about VDIs](https://forums.virtualbox.org/viewtopic.php?t=8046)
+4. [VDI Storage's Source](https://www.virtualbox.org/browser/vbox/trunk/src/VBox/Storage/VDICore.h)
+5. [VDI's Kaitai Struct](https://formats.kaitai.io/vdi/index.html)
 
 ## 为什么写这个项目？
 最近在B站上看了几个计算机原理方面的视频，突然就来了兴趣，从三极管开始，搭建与/或/非/异或/同或等基本门电路，实现8位全加器等等，一发不可收拾，于是又买了《X86汇编语言：实模式到保护模式》系列课程，开始重新学习x86汇编。  

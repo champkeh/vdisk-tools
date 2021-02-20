@@ -1,6 +1,6 @@
 const { writeBufferToFile, numberToHexBuffer } = require('../shared/utils')
 const { readHeaderFromVDisk } = require('../shared/vdisk')
-const HardDiskHeader = require('../structure/header')
+const HardDiskHeader = require('../structure/vhd/header')
 
 /**
  * 写入 VHD-Fixed 类型的文件

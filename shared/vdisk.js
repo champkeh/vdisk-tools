@@ -1,6 +1,6 @@
 const fs = require('fs')
 const { VDISK_TYPE } = require('../const')
-const HardDiskFooter = require('../structure/footer')
+const HardDiskFooter = require('../structure/vhd/footer')
 const { readBufferFromFile, readBufferFromFileToEnd, writeBufferToFile } = require('./utils')
 
 /**

@@ -1,6 +1,6 @@
 const {readFooterFromVDisk, readHeaderFromVDisk, resolveVDiskType} = require('../shared/vdisk')
-const HardDiskFooter = require('../structure/footer')
-const HardDiskHeader = require('../structure/header')
+const HardDiskFooter = require('../structure/vhd/footer')
+const HardDiskHeader = require('../structure/vhd/header')
 const { VDISK_TYPE } = require('../const')
 
 function inspect(vhdFilePath) {

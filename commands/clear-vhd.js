@@ -1,7 +1,7 @@
 const fs = require('fs')
 const { writeBufferToFile } = require('../shared/utils')
 const { readHeaderFromVDisk, readFooterFromVDisk } = require('../shared/vdisk')
-const HardDiskHeader = require('../structure/header')
+const HardDiskHeader = require('../structure/vhd/header')
 
 /**
  * 清除 VHD-Fixed 类型的文件
