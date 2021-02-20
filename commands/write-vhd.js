@@ -1,4 +1,4 @@
-const { writeBufferToFile, readBufferFromFile, hexBufferToNumber, numberToHexBuffer } = require('../shared/utils')
+const { writeBufferToFile, numberToHexBuffer } = require('../shared/utils')
 const { readHeaderFromVDisk } = require('../shared/vdisk')
 const HardDiskHeader = require('../structure/header')
 

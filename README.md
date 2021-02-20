@@ -6,7 +6,7 @@
 > 文件规范| 小类 | 支持情况
 > --- |   ---   |  ---
 > vhd | fixed   | 支持
-> vhd | dynamic | coming soon
+> vhd | dynamic | 支持
 > vhd | difference | 暂不支持
 
 
@@ -29,7 +29,7 @@ vdisk write disk.vhd boot.bin
 vdisk write disk.vhd data.bin -s 100
 ```
 
-### 按照LBA逻辑扇区号读取磁盘内容(coming soon)
+### 按照LBA逻辑扇区号读取磁盘内容
 ```shell
 # 从虚拟磁盘 disk.vhd 的第100扇区(以0开头)处开始，读取2个扇区的内容
 vdisk read disk.vhd -s 100 -c 2
@@ -40,7 +40,7 @@ vdisk read disk.vhd -s 100 -c 2
 vdisk inspect disk.vhd
 ```
 
-### 清空虚拟磁盘文件(coming soon)
+### 清空虚拟磁盘文件
 ```shell
 vdisk clear disk.vhd
 ```
