@@ -73,3 +73,8 @@ Commands:
 
 1. [Virtual Hard Disk Image Format Specification(2006)](specs/Virtual%20Hard%20Disk%20Format%20Spec_10_18_06.doc)
 2. [Virtual Hard Disk v2 (VHDX) File Format](specs/MS-VHDX.pdf)
+
+## 为什么写这个项目？
+最近在B站上看了几个计算机原理方面的视频，突然就来了兴趣，从三极管开始，搭建与/或/非/异或/同或等基本门电路，实现8位全加器等等，一发不可收拾，于是又买了《X86汇编语言：实模式到保护模式》系列课程，开始重新学习x86汇编。  
+这个课程需要用到作者写的一个`FixVhdWr.exe`的工具，用来将汇编写的引导程序写入虚拟磁盘文件的MBR，从而在虚拟机上启动来查看效果，然而这个工具只有Windows版本，我身边又没有Windows操作系统，因此，就搜了一下`vhd`文件的格式规范，用`nodejs`重新实现了相关功能。  
+作者为了教学目的只实现了`Fixed VHD`文件的写入，课程中所有的汇编程序都是写入到`Fixed VHD`磁盘上面的，我为了学习目的，自己实现了`Fixed`和`Dynamic`两种格式的`VHD`文件，并且写了`read/write/clear/inspect`等多个命令，算是实现了一个较完整的操作虚拟磁盘文件的工具。
