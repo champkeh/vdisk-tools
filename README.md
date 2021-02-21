@@ -7,9 +7,9 @@
 > ---     | :---:        | :---:
 > vhd     | fixed        | yes
 > vhd     | dynamic      | yes
-> vhd     | differencing | no (coming soon)
+> vhd     | differencing | no
 > vdi     | fixed        | no (coming soon)
-> vdi     | dynamic      | no
+> vdi     | dynamic      | no (coming soon)
 > vmdk    | fixed        | no
 > vmdk    | dynamic      | no
 
