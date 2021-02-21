@@ -73,7 +73,7 @@ Commands:
   help [command]               display help for command
 ```
 
-## 规范文档
+## 相关规范文档
 
 1. [Virtual Hard Disk Image Format Specification(2006)](specs/Virtual%20Hard%20Disk%20Format%20Spec_10_18_06.doc)
 2. [Virtual Hard Disk v2 (VHDX) File Format](specs/MS-VHDX.pdf)
