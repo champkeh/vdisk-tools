@@ -205,7 +205,7 @@ function executeCommand(command, debug) {
     try {
         command()
     } catch (e) {
-        debug ? error(e.message) : console.log(e)
+        debug ? console.log(e) : error(e.message)
     }
 }
 
