@@ -32,14 +32,6 @@ function readFooterFromVDisk(vhdFile) {
     return readBufferFromFileToEnd(vhdFile, -512)
 }
 
-/**
- * 读取虚拟磁盘文件的Header结构(1024字节)
- * @param vhdFile
- */
-function readHeaderFromVDisk(vhdFile) {
-    // todo: 这里需要根据虚拟磁盘文件格式读取对应位置的数据
-    return readBufferFromFile(vhdFile, 512, 1024)
-}
 
 function checkVhdValid(footer) {
     // todo(champ): 这里尝试解析 vhd footer 结构，如果失败则说明不是合法的 vhd 文件
@@ -80,7 +72,6 @@ function fixBootSector(vdisk) {
 
 module.exports = {
     readFooterFromVDisk,
-    readHeaderFromVDisk,
     resolveVDiskType,
     checkWritePositionValidForFixed,
 }

@@ -1,5 +1,5 @@
-const { writeBufferToFile, numberToHexBuffer } = require('../shared/utils')
-const { readHeaderFromVDisk, checkWritePositionValidForFixed } = require('../shared/vdisk')
+const { readBufferFromFile, writeBufferToFile, numberToHexBuffer } = require('../shared/utils')
+const { checkWritePositionValidForFixed } = require('../shared/vdisk')
 const HardDiskHeader = require('../structure/vhd/header')
 const { error, debug } = require('../shared/log')
 
@@ -12,7 +12,7 @@ const { error, debug } = require('../shared/log')
 function writeFixed(vhdFile, data, sector) {
     const offset = sector * 512
     if (!checkWritePositionValidForFixed(vhdFile, data, offset)) {
-        error('写入位置不合法')
+        error('写入位置不合法，写入数据已超出磁盘最大容量')
         return
     }
     return writeBufferToFile(vhdFile, data, offset)
@@ -26,7 +26,7 @@ function writeFixed(vhdFile, data, sector) {
  */
 function writeDynamic(vhdFile, data, sector) {
     // 1. 读取并解析 header 结构
-    const headerBuffer = readHeaderFromVDisk(vhdFile)
+    const headerBuffer = readBufferFromFile(vhdFile, 512, 1024)
     const hdHeaderJson = new HardDiskHeader(headerBuffer).toJSON()
 
     // 2. 计算要写入的数据占用多少个block

@@ -1,4 +1,5 @@
-const {readFooterFromVDisk, readHeaderFromVDisk, resolveVDiskType} = require('../shared/vdisk')
+const {readFooterFromVDisk, resolveVDiskType} = require('../shared/vdisk')
+const { readBufferFromFile } = require('../shared/utils')
 const HardDiskFooter = require('../structure/vhd/footer')
 const HardDiskHeader = require('../structure/vhd/header')
 const { VDISK_TYPE } = require('../const')
@@ -21,7 +22,7 @@ function inspect(vhdFilePath) {
         console.log(hdFooterJson)
 
         // 读取并解析 header 结构
-        const headerBuffer = readHeaderFromVDisk(vhdFilePath)
+        const headerBuffer = readBufferFromFile(vhdFilePath, 512, 1024)
         const hdHeaderJson = new HardDiskHeader(headerBuffer).toJSON()
 
         console.log(chalk.gray('Hard disk header:'))

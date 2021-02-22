@@ -1,6 +1,6 @@
 const fs = require('fs')
-const { writeBufferToFile } = require('../shared/utils')
-const { readHeaderFromVDisk, readFooterFromVDisk } = require('../shared/vdisk')
+const { readBufferFromFile, writeBufferToFile } = require('../shared/utils')
+const { readFooterFromVDisk } = require('../shared/vdisk')
 const HardDiskHeader = require('../structure/vhd/header')
 const { debug } = require('../shared/log')
 
@@ -19,7 +19,7 @@ function clearFixed(vhdFile) {
  */
 function clearDynamic(vhdFile) {
     // 1. 读取并解析 header 结构
-    const headerBuffer = readHeaderFromVDisk(vhdFile)
+    const headerBuffer = readBufferFromFile(vhdFile, 512, 1024)
     const hdHeaderJson = new HardDiskHeader(headerBuffer).toJSON()
 
     // 2. 重置BAT
