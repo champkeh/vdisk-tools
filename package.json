@@ -1,6 +1,6 @@
 {
   "name": "vdisk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "virtual disk toolset for virtual machine",
   "author": "Champkeh <champion.ge@gmail.com>",
   "homepage": "https://github.com/champkeh/vdisk-tools",
