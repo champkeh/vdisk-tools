@@ -1,4 +1,5 @@
 const { readBufferFromFile } = require('../shared/utils')
+const { debug } = require('../shared/log')
 
 /**
  * 读取 VHD-Fixed 类型的文件
@@ -19,7 +20,7 @@ function readFixed(vhdFile, sector, count) {
  * @param count
  */
 function readDynamic(vhdFile, sector, count) {
-    console.log('暂未实现')
+    debug('暂未实现')
 }
 
 /**
@@ -29,7 +30,7 @@ function readDynamic(vhdFile, sector, count) {
  * @param count
  */
 function readDifferencing(vhdFile, sector, count) {
-    console.log('暂未实现')
+    debug('暂未实现')
 }
 
 module.exports = {

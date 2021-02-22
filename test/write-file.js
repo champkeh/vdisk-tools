@@ -1,5 +1,3 @@
-const { writeBufferToFile } = require('../shared/utils')
+const { writeCommand } = require('../commands/write')
 
-const buffer = Buffer.from('12', 'utf-8')
-console.log(buffer)
-writeBufferToFile('test/test.txt', buffer, 3, false)
+writeCommand('/Users/champ/vms/disks/fixed4m.vhd', 'test/exam.asm', 16384)

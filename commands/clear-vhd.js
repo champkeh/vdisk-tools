@@ -2,6 +2,7 @@ const fs = require('fs')
 const { writeBufferToFile } = require('../shared/utils')
 const { readHeaderFromVDisk, readFooterFromVDisk } = require('../shared/vdisk')
 const HardDiskHeader = require('../structure/vhd/header')
+const { debug } = require('../shared/log')
 
 /**
  * 清除 VHD-Fixed 类型的文件
@@ -47,7 +48,7 @@ function clearDynamic(vhdFile) {
  * @param vhdFile
  */
 function clearDifferencing(vhdFile) {
-    console.log('暂未实现')
+    debug('暂未实现')
 }
 
 module.exports = {

@@ -1,6 +1,7 @@
 const { VDISK_TYPE } = require('../const')
 const { resolveVDiskType } = require('../shared/vdisk')
 const { clearVhdFixed, clearVhdDynamic, clearVhdDifferencing } = require('./clear-vhd')
+const { debug } = require('../shared/log')
 
 function clear(vhdFile) {
     const vdiskType = resolveVDiskType(vhdFile)
@@ -18,7 +19,7 @@ function clear(vhdFile) {
         case VDISK_TYPE.UNKNOWN:
             throw new Error('unknown vdisk type')
         default:
-            console.log('该类型还未实现')
+            debug('该类型还未实现')
             break
     }
 }

@@ -47,6 +47,19 @@ function checkVhdValid(footer) {
 }
 
 /**
+ * 检测fixed类型的文件写入位置是否合法，避免覆盖掉最后的footer结构
+ * @param vhdFile
+ * @param data
+ * @param offset
+ * @return {boolean}
+ */
+function checkWritePositionValidForFixed(vhdFile, data, offset) {
+    const tail = offset + data.length
+    const footerStart = fs.statSync(vhdFile).size - 512
+    return tail < footerStart
+}
+
+/**
  * 修复虚拟磁盘的启动扇区
  * @param vdisk
  */
@@ -69,4 +82,5 @@ module.exports = {
     readFooterFromVDisk,
     readHeaderFromVDisk,
     resolveVDiskType,
+    checkWritePositionValidForFixed,
 }

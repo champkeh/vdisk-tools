@@ -2,6 +2,7 @@ const { VDISK_TYPE } = require('../const')
 const { resolveVDiskType } = require('../shared/vdisk')
 const { readBufferFromFileToEnd } = require('../shared/utils')
 const { writeVhdFixed, writeVhdDynamic, writeVhdDifferencing } = require('./write-vhd')
+const { debug } = require('../shared/log')
 
 function write(vhdFile, binFile, sector) {
     const vdiskType = resolveVDiskType(vhdFile)
@@ -20,7 +21,7 @@ function write(vhdFile, binFile, sector) {
         case VDISK_TYPE.UNKNOWN:
             throw new Error('unknown vdisk type')
         default:
-            console.log('该类型还未实现')
+            debug('该类型还未实现')
             break
     }
 }

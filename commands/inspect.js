@@ -2,6 +2,7 @@ const {readFooterFromVDisk, readHeaderFromVDisk, resolveVDiskType} = require('..
 const HardDiskFooter = require('../structure/vhd/footer')
 const HardDiskHeader = require('../structure/vhd/header')
 const { VDISK_TYPE } = require('../const')
+const chalk = require('chalk')
 
 function inspect(vhdFilePath) {
     const vdiskType = resolveVDiskType(vhdFilePath)
@@ -11,19 +12,19 @@ function inspect(vhdFilePath) {
     const hdFooterJson = new HardDiskFooter(footerBuffer).toJSON()
 
     if (vdiskType === VDISK_TYPE.VHD_FIXED) {
-        console.log('Format: Fixed hard disk')
-        console.log('Hard disk footer:')
+        console.log(`Format: ${chalk.magenta('Fixed hard disk')}`)
+        console.log(chalk.gray('Hard disk footer:'))
         console.log(hdFooterJson)
     } else if (vdiskType === VDISK_TYPE.VHD_DYNAMIC) {
-        console.log('Format: Dynamic hard disk')
-        console.log('Hard disk footer:')
+        console.log(`Format: ${chalk.magenta('Dynamic hard disk')}`)
+        console.log(chalk.gray('Hard disk footer:'))
         console.log(hdFooterJson)
 
         // 读取并解析 header 结构
         const headerBuffer = readHeaderFromVDisk(vhdFilePath)
         const hdHeaderJson = new HardDiskHeader(headerBuffer).toJSON()
 
-        console.log('Hard disk header:')
+        console.log(chalk.gray('Hard disk header:'))
         console.log(hdHeaderJson)
     }
 }

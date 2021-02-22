@@ -6,10 +6,14 @@ const { inspectCommand } = require('./commands/inspect')
 const { readCommand } = require('./commands/read')
 const { writeCommand } = require('./commands/write')
 const { clearCommand } = require('./commands/clear')
+const { executeCommand } = require('./shared/utils')
 
 program
     .version('v'+require('./package.json').version, '-v, --version', 'output the current version')
 
+// global options
+program
+    .option('-d, --debug', 'enable debug mode', false)
 
 // subcommand: inspect <vhd>
 program
@@ -17,8 +21,8 @@ program
     .description('inspect virtual disk file structure', {
         vhd: 'virtual hard disk file'
     })
-    .action((vhd) => {
-        inspectCommand(vhd)
+    .action((vhd, options, command) => {
+        executeCommand(() => inspectCommand(vhd), program.opts().debug)
     })
 
 // subcommand: read <vhd>
@@ -31,7 +35,7 @@ program
     .option('-c, --count <count>', 'sector count to read', optionParseInt, 1)
     .action((vhd, { sector, count }) => {
         // todo: 这里可以添加格式化器
-        console.log(readCommand(vhd, sector, count))
+        executeCommand(() => console.log(readCommand(vhd, sector, count)), program.opts().debug)
     })
 
 // subcommand: write <vhd> <bin>
@@ -43,7 +47,7 @@ program
     })
     .option('-s, --sector <sector>', 'sector number to write begin', optionParseInt, 0)
     .action((vhd, bin, { sector }) => {
-        writeCommand(vhd, bin, sector)
+        executeCommand(() => writeCommand(vhd, bin, sector), program.opts().debug)
     })
 
 // subcommand: clear <vhd>
@@ -53,7 +57,7 @@ program
         vhd: 'virtual hard disk file'
     })
     .action((vhd) => {
-        clearCommand(vhd)
+        executeCommand(() => clearCommand(vhd), program.opts().debug)
     })
 
 // subcommand: graph <vhd>

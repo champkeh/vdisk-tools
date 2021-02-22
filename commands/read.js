@@ -1,6 +1,7 @@
 const { resolveVDiskType } = require('../shared/vdisk')
 const { VDISK_TYPE } = require('../const')
 const { readVhdFixed, readVhdDynamic, readVhdDifferencing } = require('./read-vhd')
+const { debug } = require('../shared/log')
 
 /**
  * 从虚拟磁盘文件读取扇区内容
@@ -25,7 +26,7 @@ function read(vhdFile, sector, count) {
         case VDISK_TYPE.UNKNOWN:
             throw new Error('unknown vdisk type')
         default:
-            console.log('该类型还未实现')
+            debug('该类型还未实现')
             break
     }
     return content

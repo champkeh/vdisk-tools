@@ -1,4 +1,5 @@
 const fs = require('fs')
+const { error } = require('./log')
 
 /**
  * 从文件中读取数据
@@ -174,6 +175,14 @@ function mappingDiskSectorToBlockSector(rawSectorNumber, sectorsPerBlock, bat) {
     const actualSectorLocation = bat[blockNumber] + (BlockBitmapSectorCount + sectorInBlock) * 512
 }
 
+function executeCommand(command, debug) {
+    try {
+        command()
+    } catch (e) {
+        debug ? error(e.message) : console.log(e)
+    }
+}
+
 module.exports = {
     readBufferFromFile,
     readBufferFromFileToEnd,
@@ -182,4 +191,5 @@ module.exports = {
     numberToHexBuffer,
     calcVersionFromBuffer4,
     chsCalc,
+    executeCommand,
 }

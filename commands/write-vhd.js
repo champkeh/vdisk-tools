@@ -1,6 +1,7 @@
 const { writeBufferToFile, numberToHexBuffer } = require('../shared/utils')
-const { readHeaderFromVDisk } = require('../shared/vdisk')
+const { readHeaderFromVDisk, checkWritePositionValidForFixed } = require('../shared/vdisk')
 const HardDiskHeader = require('../structure/vhd/header')
+const { error, debug } = require('../shared/log')
 
 /**
  * 写入 VHD-Fixed 类型的文件
@@ -10,7 +11,10 @@ const HardDiskHeader = require('../structure/vhd/header')
  */
 function writeFixed(vhdFile, data, sector) {
     const offset = sector * 512
-    // todo: 这里需要检查是否会覆盖掉最后的footer扇区
+    if (!checkWritePositionValidForFixed(vhdFile, data, offset)) {
+        error('写入位置不合法')
+        return
+    }
     return writeBufferToFile(vhdFile, data, offset)
 }
 
@@ -70,7 +74,7 @@ function allocBlock(blockSize) {
  * @param sector
  */
 function writeDifferencing(vhdFile, data, sector) {
-    console.log('暂未实现')
+    debug('暂未实现')
 }
 
 module.exports = {
