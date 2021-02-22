@@ -80,11 +80,17 @@ function hexBufferToNumber(buffer) {
     return parseInt(buffer.toString('hex'), 16)
 }
 
-function numberToHexBuffer(num, len) {
+/**
+ * 将十进制的数字转成一个指定长度的buffer
+ * @param num
+ * @param len
+ * @return {Buffer}
+ */
+function numberToBuffer(num, len) {
     const hex = align(num.toString(16), 2*len)
     const arr = []
     for (let i = 0; i < hex.length; i+=2) {
-        arr.push(hex.slice(i, i+2))
+        arr.push(parseInt(hex.slice(i, i+2), 16))
     }
     return Buffer.from(arr)
 }
@@ -172,7 +178,27 @@ function mappingDiskSectorToBlockSector(rawSectorNumber, sectorsPerBlock, bat) {
     const blockNumber = Math.floor(rawSectorNumber / sectorsPerBlock)
     const sectorInBlock = rawSectorNumber % sectorsPerBlock
 
-    const actualSectorLocation = bat[blockNumber] + (BlockBitmapSectorCount + sectorInBlock) * 512
+    return (bat[blockNumber] + BlockBitmapSectorCount + sectorInBlock) * 512
+}
+
+const FFFF = 2 ** 32 - 1
+/**
+ * 构造BAT数组
+ * @param batBuffer
+ */
+function ctorBAT(batBuffer) {
+    const result = []
+
+    for (let i = 0; i < batBuffer.length; i += 4) {
+        const buf = batBuffer.slice(i, i+4)
+        const num = hexBufferToNumber(buf)
+        if (num === FFFF) {
+            break
+        }
+        result.push(num)
+    }
+
+    return result
 }
 
 function executeCommand(command, debug) {
@@ -183,13 +209,20 @@ function executeCommand(command, debug) {
     }
 }
 
+function allocBuffer(size, init = 0) {
+    return Buffer.alloc(size, init)
+}
+
 module.exports = {
     readBufferFromFile,
     readBufferFromFileToEnd,
     writeBufferToFile,
     hexBufferToNumber,
-    numberToHexBuffer,
+    numberToBuffer,
     calcVersionFromBuffer4,
     chsCalc,
     executeCommand,
+    allocBuffer,
+    ctorBAT,
+    mappingDiskSectorToBlockSector,
 }

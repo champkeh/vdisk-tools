@@ -3,10 +3,14 @@ const fs = require('fs')
 const { writeBufferToFile } = require('../shared/utils')
 
 const config = [
+    { name: 'data/500b.data', size: 500 },
+    { name: 'data/512b.data', size: 512 },
+    { name: 'data/800b.data', size: 800 },
     { name: 'data/1k.data', size: 1024 },
     { name: 'data/2k.data', size: 1024 * 2 },
     { name: 'data/5k.data', size: 1024 * 5 },
     { name: 'data/10k.data', size: 1024 * 10 },
+    { name: 'data/2m.data', size: 1024 * 1024 * 2 },
 ]
 
 

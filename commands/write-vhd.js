@@ -1,6 +1,13 @@
-const { readBufferFromFile, writeBufferToFile, numberToHexBuffer } = require('../shared/utils')
-const { checkWritePositionValidForFixed } = require('../shared/vdisk')
+const {
+    readBufferFromFile,
+    readBufferFromFileToEnd,
+    writeBufferToFile,
+    numberToBuffer,
+    allocBuffer,
+    ctorBAT,
+} = require('../shared/utils')
 const HardDiskHeader = require('../structure/vhd/header')
+const HardDiskFooter = require('../structure/vhd/footer')
 const { error, debug } = require('../shared/log')
 
 /**
@@ -10,12 +17,19 @@ const { error, debug } = require('../shared/log')
  * @param sector
  */
 function writeFixed(vhdFile, data, sector) {
-    const offset = sector * 512
-    if (!checkWritePositionValidForFixed(vhdFile, data, offset)) {
+    // 1. 读取并解析 header 结构
+    const footerBuffer = readBufferFromFileToEnd(vhdFile, -512)
+    const hdFooterJson = new HardDiskFooter(footerBuffer).toJSON()
+
+    const maxSectors = hdFooterJson.originSize / 512
+    const dataSectors = Math.ceil(data.length / 512) // 用户数据需要多少个扇区存储
+
+    if (sector + dataSectors > maxSectors) {
         error('写入位置不合法，写入数据已超出磁盘最大容量')
         return
     }
-    return writeBufferToFile(vhdFile, data, offset)
+
+    return writeBufferToFile(vhdFile, data, sector * 512, false)
 }
 
 /**
@@ -23,48 +37,105 @@ function writeFixed(vhdFile, data, sector) {
  * @param vhdFile
  * @param data
  * @param sector
+ * @description todo(优化): 动态维护bitmap扇区
  */
 function writeDynamic(vhdFile, data, sector) {
     // 1. 读取并解析 header 结构
     const headerBuffer = readBufferFromFile(vhdFile, 512, 1024)
     const hdHeaderJson = new HardDiskHeader(headerBuffer).toJSON()
 
-    // 2. 计算要写入的数据占用多少个block
+    // 2. 计算block相关数据
     const blockSize = hdHeaderJson.blockSize
-    // const blockCount = Math.ceil(data.length / blockSize)
+    const sectorsPerBlock = blockSize / 512
+    const dataSectors = Math.ceil(data.length / 512) // 用户数据需要多少个扇区存储
 
-    // BAT占用的扇区数
-    const batSectors = Math.ceil(hdHeaderJson.maxTableEntries * 4 / 512)
-    const blockOffset = hdHeaderJson.tableOffset + 512 * batSectors
+    // 3. BAT相关数据
+    const sectorsInBAT = Math.ceil(hdHeaderJson.maxTableEntries * 4 / 512)
+    const batBufferData = readBufferFromFile(vhdFile, hdHeaderJson.tableOffset, sectorsInBAT*512)
+    const bat = ctorBAT(batBufferData)
 
+    const blockNumber = Math.floor(sector / sectorsPerBlock)
+    const sectorInBlock = sector % sectorsPerBlock
 
-    // 分配一个新的block
-    const block = allocBlock(blockSize)
-
-    // 暂时没有更好的办法更新bitmap，所以索性把它全置1
-    for (let i = 0; i < 512; i++) {
-        block[i] = 0xFF
+    // 4. 检查是否会超出容量
+    if (sector + dataSectors > hdHeaderJson.maxTableEntries * sectorsPerBlock) {
+        error('写入位置不合法，写入数据已超出磁盘最大容量')
+        return
     }
-    // 将数据写入该block
+
+    // 5. 分配block
+    // 初始写入位置所在的block还不存在，需要分配新的block
+    if (blockNumber > bat.length - 1) {
+        const allocBlockCount = blockNumber - (bat.length - 1) // 计算需要分配多少个block才能达到写入的初始位置
+        for (let i = 0; i < allocBlockCount; i++) {
+            const block = initBlock(blockSize)
+
+            // 计算该block的偏移位置
+            let blockOffset
+            if (bat.length === 0) {
+                blockOffset = hdHeaderJson.tableOffset + 512 * sectorsInBAT // 第一个block的偏移
+            } else {
+                blockOffset = bat[bat.length-1] * 512 + (blockSize + 512)
+            }
+
+            writeBufferToFile(vhdFile, block, blockOffset, true)
+            const tableEntry = numberToBuffer(blockOffset/512, 4)   // bat中存放对应区块的偏移地址(以扇区单位)
+            bat.push(blockOffset/512)
+
+            // 更新BAT
+            writeBufferToFile(vhdFile, tableEntry, hdHeaderJson.tableOffset + (bat.length-1)*4, false)
+        }
+    }
+
+    // 初始位置的block已经存在
+    let writeOffset = (bat[blockNumber] + 1 + sectorInBlock) * 512
+
+    // 将数据写入该block(这里直接写死成第一个扇区)
+    let writeData = []
     for (let i = 0; i < data.length; i++) {
-        // 跳过bitmap扇区
-        block[512+i] = data[i]
+        // 判断是否到达block边界
+        const div = (writeOffset + i - (512 + 1024 + sectorsInBAT * 512)) % (blockSize+512)
+        if (div === 0) {
+            // 先将缓存里面的数据写入磁盘文件
+            writeBufferToFile(vhdFile, Buffer.from(writeData), writeOffset, false)
+
+            // 分配新的block
+            const block = initBlock(blockSize)
+
+            // 计算该block的偏移位置
+            let blockOffset
+            if (bat.length === 0) {
+                blockOffset = hdHeaderJson.tableOffset + 512 * sectorsInBAT // 第一个block的偏移
+            } else {
+                blockOffset = bat[bat.length-1] * 512 + (blockSize + 512)
+            }
+
+            writeBufferToFile(vhdFile, block, blockOffset, true)
+            const tableEntry = numberToBuffer(blockOffset/512, 4)   // bat中存放对应区块的偏移地址(以扇区单位)
+            bat.push(blockOffset/512)
+
+            // 更新BAT
+            writeBufferToFile(vhdFile, tableEntry, hdHeaderJson.tableOffset + (bat.length-1)*4, false)
+
+            // 更新容器
+            writeData = []
+            writeOffset = blockOffset+512
+        }
+
+        writeData.push(data[i])
     }
 
     // 将该block插入磁盘文件
-    writeBufferToFile(vhdFile, block, blockOffset, true)
-
-    // 更新BAT
-    const tableEntry = numberToHexBuffer(blockOffset/512, 4)
-    writeBufferToFile(vhdFile, tableEntry, hdHeaderJson.tableOffset, false)
-
-    // 更新bitmap扇区
-    // numberToHexBuffer(8)
+    writeBufferToFile(vhdFile, Buffer.from(writeData), writeOffset, false)
 }
 
-function allocBlock(blockSize) {
-    // bitmap扇区
-    return Buffer.alloc(blockSize+512, 0)
+function initBlock(blockSize) {
+    const block = allocBuffer(blockSize+512)
+    // 暂时没有更好的办法动态维护bitmap，所以索性把它全置1
+    for (let i = 0; i < 512; i++) {
+        block[i] = 0xFF
+    }
+    return block
 }
 
 /**
